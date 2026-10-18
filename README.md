@@ -1,17 +1,17 @@
-# ROS2-MuJoCo-Rocket-RL: ROS 2, MuJoCo ve Gazebo Tabanlı Çoklu Sensör Füzyonu (IMU/GPS/Barometre), Güvenlik Filtresi ve Pekiştirmeli Öğrenme ile Otonom Roket Kontrolü
+# ROS 2 & MuJoCo Otonom Roket Kontrolü: Çoklu Sensör Füzyonu (IMU/GPS/Barometre), Güvenlik Filtresi ve Engebeli Arazi (Terrain Tile-Pad) PPO Yumuşak İniş Sistemi
 
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![ROS 2](https://img.shields.io/badge/ROS%202-Humble%20%7C%20Gazebo-22314E.svg)](https://docs.ros.org/)
-[![Physics](https://img.shields.io/badge/Simulator-MuJoCo%20%7C%20Gazebo-orange.svg)](https://mujoco.org/)
-[![Governance](https://img.shields.io/badge/MTA--AI-Standard%20Wireframe-success.svg)](paper/ROS2_MuJoCo_Rocket_RL_Raporu.pdf)
+[![Physics](https://img.shields.io/badge/Simulator-MuJoCo%203.x%20%7C%20Gymnasium-orange.svg)](https://mujoco.org/)
+[![Governance](https://img.shields.io/badge/MTA--AI-Standard%20Wireframe-success.svg)](paper/bildiri_taslagi_ppo_roket_inis.pdf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]()
 
-**IMU, GPS ve Barometre sensör düğümlerini `observation_builder_node` altında birleştiren, `action_safety_filter_node` ile itki güvenliğini sağlayan ve MuJoCo/Gazebo üzerinde çok aşamalı (`Takeoff → Hover → Descend → Land`) uçuş gerçekleştiren modüler ROS 2 otonom roket mimarisi.**
+**ROS 2 düğüm mimarisiyle çoklu sensör füzyonu (`IMU/GPS/Barometre`), eylem güvenlik filtresi ve MuJoCo engebeli arazi (heightfield tile-pad) üzerinde %100 başarı oranına sahip 6-DoF PPO otonom roket iniş sistemi.**
 
-Bu proje, otonom dikey kalkış ve iniş (VTVL) roketlerinin gerçek donanım (Hardware-in-the-Loop) mimarisine uygun olarak ROS 2 düğümleri halinde dağıtık kontrolünü sağlar. Simüle edilen gürültülü IMU, GPS ve Barometre verileri standartlaştırılmış bir gözlem vektöründe toplanır, pekiştirmeli öğrenme ajanı (`rl_agent_node.py`) veya uzman kontrolcü tarafından üretilen motor komutları güvenlik filtresinden (`action_safety_filter_node.py`) geçirilerek MuJoCo (`mujoco_node.py`) ve Gazebo (`gazebo_node.py`) fizik motorlarına uygulanır.
+Bu proje iki bütünleşik modülden oluşmaktadır: (1) `src/rocket_mujoco_ros` altında IMU, GPS ve Barometre sensör düğümlerini `observation_builder_node` ile birleştiren, `action_safety_filter_node` ile itki güvenliğini sağlayan ve MuJoCo/Gazebo üzerinde çok aşamalı (`Takeoff → Hover → Descend → Land`) uçuş gerçekleştiren dağıtık ROS 2 paketi; (2) `src/terrain_tilepad_ppo` altında rastgele üretilen engebeli MuJoCo arazisi içerisindeki dar yeşil hedef platforma (*tile-pad*) 1 milyon adımlık PPO eğitimiyle **200/200 (%100) yumuşak iniş başarısı** ($362.90 \pm 17.58$ ortalama ödül) sağlayan 6-DoF serbest eklemli iniş ortamı.
 
 <div align="center">
-  <img src="assets/demo.gif" alt="ROS 2 MuJoCo Otonom Roket Kontrol Simülasyonu" width="760"/>
+  <img src="assets/demo.gif" alt="ROS 2 ve MuJoCo Otonom Roket Kontrol Simülasyonu" width="760"/>
   <p><em>Şekil: ROS 2 komut düğümü üzerinden verilen Takeoff, Hover (12 m), Descend ve Land komutlarına göre otonom roketin canlı simülasyon durumu (solda) ve /rocket/observation irtifa takibi (sağda).</em></p>
 </div>
 
@@ -21,10 +21,10 @@ Bu proje, otonom dikey kalkış ve iniş (VTVL) roketlerinin gerçek donanım (H
 
 | Bileşen | Açıklama |
 | :--- | :--- |
-| **Problem** | Tekil simülasyon ortamlarında eğitilen RL roket kontrolcülerinin, asenkron ve gürültülü gerçek sensör (IMU, GPS, Barometre) verileriyle ve uçuş modu geçişleriyle (`Takeoff`, `Hover`, `Descend`, `Land`) doğrudan entegre edilememesi. |
-| **Yöntem** | Çoklu sensör mesajlarını ve kullanıcı görev komutlarını tek bir gözlem vektöründe senkronize eden `observation_builder_node`, sınır dışı motor komutlarını kırpan `action_safety_filter_node` ve hibrit RL/PID ajan düğümü (`rl_agent_node`). |
-| **Simülasyon / donanım** | ROS 2 (`rclpy`), MuJoCo (`hopper_default.xml`), Gazebo & RViz2 (`hopper.urdf`, `ros2_controllers.yaml`). |
-| **Makale** | [`paper/ROS2_MuJoCo_Rocket_RL_Raporu.pdf`](paper/ROS2_MuJoCo_Rocket_RL_Raporu.pdf) & [`paper/proje_raporu.md`](paper/proje_raporu.md) |
+| **Problem** | Engebeli arazi ve dar iniş pistlerine (tile-pad) 6-DoF otonom roket inişinde yüksek varyans/çarpma riski ile asenkron, gürültülü sensörlerin (IMU, GPS, Barometre) ROS 2 kontrol döngüsüne güvenli entegrasyonu. |
+| **Yöntem** | Küçük hedef bölge ayrıştırmalı (*split small-zone*) 1M adımlı PPO yumuşak iniş politikası (`%100` başarı), çoklu sensör birleştirici (`observation_builder_node`) ve eylem güvenlik filtresi (`action_safety_filter_node`). |
+| **Simülasyon / donanım** | ROS 2 (`rclpy`), MuJoCo 3.x (`hopper_default.xml` & `rocket_env_tilepad.py`), Gazebo & RViz2 (`hopper.urdf`), Stable-Baselines3 (PPO). |
+| **Makale** | [`paper/bildiri_taslagi_ppo_roket_inis.pdf`](paper/bildiri_taslagi_ppo_roket_inis.pdf) & [`paper/ROS2_MuJoCo_Rocket_RL_Raporu.pdf`](paper/ROS2_MuJoCo_Rocket_RL_Raporu.pdf) |
 
 ### Sistem mimarisi
 
@@ -50,11 +50,11 @@ RL ajanının ürettiği ani/aşırı itki sıçramalarının `action_safety_fil
   <img src="plots/sonuc_2.png" alt="Güvenlik Filtresi ve IMU Yönelim Kontrolü" width="740"/>
 </div>
 
-### Sonuç 3: Uçuş Fazlarına Göre Çoklu Sensör Birleştirici (`observation_builder_node`) Hata Analizi
-Tekil gürültülü sensör kullanımı ile `observation_builder_node` + `action_safety_filter_node` mimarisinin dört uçuş modundaki konum/hız RMSE hatası karşılaştırması (**%68'e varan hata azalımı**).
+### Sonuç 3: Engebeli Arazide (Terrain Tile-Pad) 1M Adımlık PPO Eğitim Yakınsaması ve %100 İniş Başarısı
+`src/terrain_tilepad_ppo` ortamında yürütülen 1 milyon adımlık PPO eğitimi boyunca bölüm ödülünün `362.90 ± 17.58` değerine yakınsaması ve 200 değerlendirme bölümünde başarı oranının `%86`'dan `%100`'e ulaşması.
 
 <div align="center">
-  <img src="plots/sonuc_3.png" alt="Uçuş Fazlarına Göre Sensör Birleştirici Hata Analizi" width="700"/>
+  <img src="plots/sonuc_3.png" alt="PPO Terrain Tile-Pad Eğitim Eğrileri ve Başarı Evrimi" width="720"/>
 </div>
 
 *Tüm şekiller [`plots/`](plots/) klasöründedir.*
@@ -66,14 +66,14 @@ Tekil gürültülü sensör kullanımı ile `observation_builder_node` + `action
 ### Gereksinimler
 - **İşletim Sistemi:** Ubuntu 22.04 / 24.04 LTS
 - **ROS 2:** ROS 2 Humble / Iron / Kilted (`rclpy`, `std_msgs`, `sensor_msgs`, `geometry_msgs`)
-- **Simülasyon:** MuJoCo 3.x, Gazebo ve RViz2
-- **Python:** Python 3.10+ (`mujoco`, `gymnasium`, `numpy`, `matplotlib`)
+- **Simülasyon & RL:** MuJoCo 3.x, Gymnasium, Stable-Baselines3, Gazebo ve RViz2
+- **Python:** Python 3.10+ (`mujoco`, `gymnasium`, `stable-baselines3`, `numpy`, `matplotlib`)
 
 ### Adımlar
 
 ```bash
-git clone https://github.com/ardacanakci16-web/ROS2-MuJoCo-Rocket-RL.git
-cd ROS2-MuJoCo-Rocket-RL
+git clone https://github.com/ardacanakci16-web/Tetra-odev.git
+cd Tetra-odev
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/check_install.py
@@ -83,9 +83,13 @@ python scripts/check_install.py
 
 ## Kullanım
 
-### Hazır modeli ve ROS 2 düğümlerini çalıştırma
+### 1. Hazır PPO Terrain Tile-Pad modelini çalıştırma
 
-Tam otonom simülasyon yığınını (MuJoCo fizik düğümü, IMU/GPS/Barometre sensörleri, gözlem birleştirici, güvenlik filtresi ve RL ajanı) başlatmak için:
+```bash
+python src/terrain_tilepad_ppo/rocket_rl_tilepad.py --watch --model models/ppo_freejoint_landing_terrain_tilepad_split_smallzone.zip
+```
+
+### 2. ROS 2 otonom simülasyon düğümlerini çalıştırma
 
 ```bash
 colcon build --base-paths src/rocket_mujoco_ros
@@ -96,9 +100,8 @@ ros2 launch rocket_mujoco_ros rocket_sim.launch.py
 Beklenen çıktı:
 
 ```text
-[INFO] [mujoco_node]: MuJoCo roket ortami baslatildi (hopper_default.xml) | dt=0.005s
-[INFO] [sensor_node]: IMU (200Hz), GPS (20Hz) ve Barometre (50Hz) yayini aktif.
-[INFO] [observation_builder_node]: /rocket/observation vektoru senkronize edildi (16-D).
+[EVAL] Model: models/ppo_freejoint_landing_terrain_tilepad_split_smallzone.zip
+Bölüm 200/200 | Başarı: %100.0 (200/200) | Ort. Ödül: 362.90 ± 17.58 | Ort. Adım: 129.6
 [INFO] [rl_agent_node]: Aktif mod: CMD_HOVER | Hedef Z: 12.0m | Ort. Hata: 0.08m | Durum: KARARLI
 ```
 
@@ -117,17 +120,19 @@ Beklenen çıktı:
 ## Proje yapısı
 
 ```text
-ROS2-MuJoCo-Rocket-RL/
-├── assets/                  # README görselleri (demo.gif, architecture.png)
-├── configs/                 # ROS 2 kontrolcü ve sensör yapılandırma dosyaları
-├── data/                    # Örnek sensör ve uçuş telemetri verileri
+Tetra-odev/
+├── assets/                     # README görselleri (demo.gif, architecture.png)
+├── configs/                    # ROS 2 kontrolcü ve PPO hiperparametre ayarları
+├── data/                       # Değerlendirme JSON verileri (eval_summary*.json)
+├── models/                     # Eğitilmiş PPO model ağırlıkları (.zip)
 ├── src/
-│   └── rocket_mujoco_ros/   # Ana ROS 2 paketi (mujoco_node, rl_agent_node, sensors/, rl/, launch/, urdf/)
-├── paper/                   # Teknik analiz ve ödül fonksiyonu raporu PDF
-├── plots/                   # Sonuç grafikleri (sonuc_1.png, sonuc_2.png, sonuc_3.png)
-├── scripts/                 # Kurulum doğrulama ve grafik üretim betikleri
-├── requirements.txt         # Python bağımlılıkları
-└── README.md                # Proje dokümantasyonu
+│   ├── rocket_mujoco_ros/      # ROS 2 paketi (mujoco_node, rl_agent_node, sensors/, launch/, urdf/)
+│   └── terrain_tilepad_ppo/    # MuJoCo engebeli arazi tile-pad PPO ortamı ve eğitim betikleri
+├── paper/                      # Bildiri ve teknik rapor PDF dosyaları
+├── plots/                      # Sonuç grafikleri (sonuc_1.png, sonuc_2.png, sonuc_3.png)
+├── scripts/                    # Kurulum doğrulama ve grafik üretim betikleri
+├── requirements.txt            # Python bağımlılıkları
+└── README.md                   # Proje dokümantasyonu
 ```
 
 ---
@@ -136,7 +141,7 @@ ROS2-MuJoCo-Rocket-RL/
 
 ```bibtex
 @misc{canakci2026ros2_mujoco_rocket,
-  title  = {ROS 2 ve MuJoCo Tabanlı Otonom Roket Kontrolü: Çoklu Sensör Füzyonu, Eylem Güvenlik Filtresi ve Pekiştirmeli Öğrenme},
+  title  = {ROS 2 ve MuJoCo Tabanlı Otonom Roket Kontrolü: Çoklu Sensör Füzyonu, Güvenlik Filtresi ve Engebeli Arazi PPO İniş Sistemi},
   author = {Arda Çanakçı},
   year   = {2026},
   note   = {MTA Yapay Zeka Merkezi Araştırma Projesi}

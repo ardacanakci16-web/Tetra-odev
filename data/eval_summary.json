@@ -1,0 +1,9 @@
+{
+  "n_episodes": 200,
+  "success_rate": 1.0,
+  "mean_reward": 362.89896539468697,
+  "std_reward": 17.584381731216503,
+  "min_reward": 317.34533307006615,
+  "max_reward": 427.1946007015382,
+  "mean_episode_length": 129.625
+}
