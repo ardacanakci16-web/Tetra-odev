@@ -1,0 +1,15 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    tvc_controller:
+      type: position_controllers/JointGroupPositionController
+
+tvc_controller:
+  ros__parameters:
+    joints:
+      - tvc_yaw_joint
+      - tvc_pitch_joint

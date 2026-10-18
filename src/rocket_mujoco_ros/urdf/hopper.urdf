@@ -1,0 +1,269 @@
+<?xml version="1.0" ?>
+<robot name="vtvl_hopper">
+
+    <!-- Materials -->
+    <material name="body_mat">
+        <color rgba="0.8 0.8 0.8 0.7"/>
+    </material>
+    <material name="leg_mat">
+        <color rgba="0.2 0.2 0.2 1"/>
+    </material>
+    <material name="foot_mat">
+        <color rgba="0.9 0.9 0.2 1"/>
+    </material>
+    <material name="engine_mat">
+        <color rgba="0.8 0.2 0.2 1"/>
+    </material>
+
+    <!-- Dummy Root Link -->
+    <link name="dummy"/>
+    <joint name="dummy_joint" type="fixed">
+        <parent link="dummy"/>
+        <child link="base_link"/>
+    </joint>
+
+    <!-- Base Link -->
+    <link name="base_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.6"/>
+            <inertia ixx="0.025" ixy="0" ixz="0" iyy="0.025" iyz="0" izz="0.008"/>
+        </inertial>
+
+        <!-- Main Body -->
+        <visual>
+            <origin xyz="0 0 0.1475" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.06" length="0.595"/>
+            </geometry>
+            <material name="body_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0.1475" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.06" length="0.595"/>
+            </geometry>
+        </collision>
+
+        <!-- Leg 1 (+X) -->
+        <visual>
+            <origin xyz="0.2 0 -0.18" rpy="0 -0.8519 0"/>
+            <geometry>
+                <cylinder radius="0.012" length="0.5315"/>
+            </geometry>
+            <material name="leg_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="0.2 0 -0.18" rpy="0 -0.8519 0"/>
+            <geometry>
+                <cylinder radius="0.012" length="0.5315"/>
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0.4 0 -0.355" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.025"/>
+            </geometry>
+            <material name="foot_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="0.4 0 -0.355" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.025"/>
+            </geometry>
+        </collision>
+
+        <!-- Leg 2 (-X) -->
+        <visual>
+            <origin xyz="-0.2 0 -0.18" rpy="0 0.8519 0"/>
+            <geometry>
+                <cylinder radius="0.012" length="0.5315"/>
+            </geometry>
+            <material name="leg_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="-0.2 0 -0.18" rpy="0 0.8519 0"/>
+            <geometry>
+                <cylinder radius="0.012" length="0.5315"/>
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="-0.4 0 -0.355" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.025"/>
+            </geometry>
+            <material name="foot_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="-0.4 0 -0.355" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.025"/>
+            </geometry>
+        </collision>
+
+        <!-- Leg 3 (+Y) -->
+        <visual>
+            <origin xyz="0 0.2 -0.18" rpy="0.8519 0 0"/>
+            <geometry>
+                <cylinder radius="0.012" length="0.5315"/>
+            </geometry>
+            <material name="leg_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0.2 -0.18" rpy="0.8519 0 0"/>
+            <geometry>
+                <cylinder radius="0.012" length="0.5315"/>
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 0.4 -0.355" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.025"/>
+            </geometry>
+            <material name="foot_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0.4 -0.355" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.025"/>
+            </geometry>
+        </collision>
+
+        <!-- Leg 4 (-Y) -->
+        <visual>
+            <origin xyz="0 -0.2 -0.18" rpy="-0.8519 0 0"/>
+            <geometry>
+                <cylinder radius="0.012" length="0.5315"/>
+            </geometry>
+            <material name="leg_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="0 -0.2 -0.18" rpy="-0.8519 0 0"/>
+            <geometry>
+                <cylinder radius="0.012" length="0.5315"/>
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 -0.4 -0.355" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.025"/>
+            </geometry>
+            <material name="foot_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="0 -0.4 -0.355" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.025"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- TVC Yaw Link -->
+    <link name="tvc_yaw_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.01"/>
+            <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+        </inertial>
+    </link>
+
+    <!-- TVC Yaw Joint -->
+    <joint name="tvc_yaw_joint" type="revolute">
+        <parent link="base_link"/>
+        <child link="tvc_yaw_link"/>
+        <origin xyz="0 0 -0.150" rpy="0 0 0"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-0.4363" upper="0.4363" effort="2.5" velocity="10"/>
+        <dynamics damping="0.1" friction="0.005"/>
+    </joint>
+
+    <!-- TVC Pitch Link -->
+    <link name="tvc_pitch_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.02"/>
+            <inertia ixx="0.0002" ixy="0" ixz="0" iyy="0.0002" iyz="0" izz="0.0002"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 -0.025" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.04" length="0.02"/>
+            </geometry>
+            <material name="engine_mat"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.025" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.04" length="0.02"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- TVC Pitch Joint -->
+    <joint name="tvc_pitch_joint" type="revolute">
+        <parent link="tvc_yaw_link"/>
+        <child link="tvc_pitch_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="-0.4363" upper="0.4363" effort="2.5" velocity="10"/>
+        <dynamics damping="0.1" friction="0.005"/>
+    </joint>
+
+    <!-- Ros2 Control for Joints -->
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+        <joint name="tvc_yaw_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="tvc_pitch_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
+
+    <!-- Gazebo Control Plugin -->
+    <gazebo>
+        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+            <parameters>/home/arda/ros2_ws/install/rocket_mujoco_ros/share/rocket_mujoco_ros/config/ros2_controllers.yaml</parameters>
+        </plugin>
+    </gazebo>
+
+    <!-- Gazebo Force Plugin for Engine Thrust -->
+    <gazebo>
+        <plugin name="gazebo_ros_force" filename="libgazebo_ros_force.so">
+            <ros>
+                <namespace>/rocket</namespace>
+                <remapping>gazebo_ros_force:=thrust</remapping>
+            </ros>
+            <link_name>dummy</link_name>
+            <force_frame>link</force_frame>
+        </plugin>
+    </gazebo>
+
+    <!-- Gazebo Ground Truth State Plugin -->
+    <gazebo>
+        <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+            <ros>
+                <namespace>/rocket</namespace>
+                <remapping>odom:=state</remapping>
+            </ros>
+            <frame_name>world</frame_name>
+            <body_name>dummy</body_name>
+            <update_rate>50.0</update_rate>
+        </plugin>
+    </gazebo>
+
+    <!-- Gazebo Colors -->
+    <gazebo reference="base_link">
+        <material>Gazebo/White</material>
+    </gazebo>
+    <gazebo reference="tvc_pitch_link">
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+</robot>
