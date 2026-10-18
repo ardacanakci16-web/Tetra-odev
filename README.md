@@ -72,8 +72,8 @@ RL ajanının ürettiği ani/aşırı itki sıçramalarının `action_safety_fil
 ### Adımlar
 
 ```bash
-git clone https://github.com/ardacanakci16-web/Tetra-odev.git
-cd Tetra-odev
+git clone https://github.com/ardacanakci16-web/ROS2-MuJoCo-Rocket-RL.git
+cd ROS2-MuJoCo-Rocket-RL
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/check_install.py
@@ -120,7 +120,7 @@ Bölüm 200/200 | Başarı: %100.0 (200/200) | Ort. Ödül: 362.90 ± 17.58 | Or
 ## Proje yapısı
 
 ```text
-Tetra-odev/
+ROS2-MuJoCo-Rocket-RL/
 ├── assets/                     # README görselleri (demo.gif, architecture.png)
 ├── configs/                    # ROS 2 kontrolcü ve PPO hiperparametre ayarları
 ├── data/                       # Değerlendirme JSON verileri (eval_summary*.json)
